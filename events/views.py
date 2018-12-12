@@ -36,3 +36,13 @@ def event_detail1(request,event_id):
         'event':event,
     }
     return render(request,'events/event_about.html', context)
+
+def list_event_of_user(request):
+    clubs = ExistingClub.objects.filter(club_members=request.user)
+    events = Events.objects.all().order_by('-event_from')
+
+    context = {
+        'events':events,
+        'clubs':clubs,
+    }
+    return render(request,'events/list_event1.html', context)

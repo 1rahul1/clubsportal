@@ -7,8 +7,8 @@
               <img class="rounded-circle account-img" src="{{ object.club_logo.url }}">
               <div class="media-body">
                 <h2 class="account-heading">{{ object.club_name }}</h2>
-                <p class="text-secondary">{{ object.club_info }}</p>
-            </div> 
+                <p class="text-secondary">{{ object.club_info|linebreaks|urlize }}</p>
+            </div>
             </div>
             {% if request.user in object.club_members.all %}
                 <form class='myclub.url' method="POST" action="{% url 'propose_join:quitclub' object.id %}" class="form">
@@ -22,7 +22,7 @@
                 {% else %}
                 <form class="exlist.url" method="POST" action="{% url 'propose_join:add_to_join' %}">
                         {% csrf_token %}
-                                <input type="hidden" name="club-joined" value="{{ club.club_name }}">
+                                <input type="hidden" name="club-joined" value="{{ object.club_name }}">
                                 <button type="submit" class="btn btn-success btn-md" style="width:100%">Join Club </button>
                       </form>
                 {% endif %}

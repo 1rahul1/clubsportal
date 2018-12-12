@@ -40,7 +40,7 @@ def register(request):
             return redirect('emailverify')
     else:
         form=Signup_form()
-        form1 = AddProfile(request.POST, request.FILES)
+        form1 = AddProfile()
 
     context = {
         'form' : form,

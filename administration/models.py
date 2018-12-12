@@ -23,7 +23,7 @@ class Onpollclub(VoteModel,models.Model):
     club_info =models.TextField(max_length=20000)
     club_logo=models.ImageField(upload_to='media_/club_logo',)
     date = models.DateTimeField(default=timezone.now, blank=True)
-    pollend=models.IntegerField(null=True,blank=True)
+    pollend=models.IntegerField(default='506972000',blank=True)
 
     def __str__(self):
         return  str(self.club_name) + " by " + str(self.name)

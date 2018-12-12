@@ -7,9 +7,9 @@
               <img class="rounded-circle account-img" src="{{ object.club_logo.url }}">
               <div class="media-body">
                 <h2 class="account-heading">{{ object.club_name }}</h2>
-                <p class="text-secondary">{{ object.club_info }}</p>
+                <p class="text-secondary">{{ object.club_info|linebreaks|urlize }}</p>
                 <p class="text-secondary">Proposed on : {{ object.date }}</p>
-            </div> 
+            </div>
           </div>
           <center>
           <h2 class='border-bottom mb-4 '>Poll Status</h2>
@@ -17,8 +17,8 @@
           <h5 class="text-secondary" id="demo"></h5>
           <div id="chartContainer" style="height: 350px; width: 100%;"></div>
           </center>
-      </div>            
-            
+      </div>
+
         <meta http-equiv="refresh" content="20" />
 <script>
 // Set the date we're counting down to

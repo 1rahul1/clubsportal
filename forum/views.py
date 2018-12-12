@@ -9,7 +9,7 @@ from django.views.generic import (
     DeleteView,
     RedirectView
 )
-from .models import Post, Comments
+from .models import Post, Comments, NotificationsPost, NotificationsEvents
 from .forms import Add_Post,Add_Comment,Search_Post
 from events.forms import AddEventForm
 from django.contrib import messages
@@ -19,10 +19,16 @@ from propose_join.models import ExistingClub
 from django.db.models import Q
 from events.models import Events
 from django.template.loader import render_to_string
+from itertools import chain
+from operator import attrgetter
 
 # Create your views here.
 @login_required
 def index(request):
+    cuser = request.user
+    PNoti = NotificationsPost.objects.filter(user = cuser).filter(read = False)
+    ENoti = NotificationsEvents.objects.filter(user = cuser).filter(read = False)
+    count = PNoti.count() + ENoti.count()
     club = ExistingClub.objects.get(club_name='Global')
     if request.method == 'POST':
         form = Add_Post(request.POST or None)
@@ -45,6 +51,7 @@ def index(request):
                 'posts': posts,
                 'form' : form,
                 'form1':form1,
+                'count':count,
             }
             return render(request,'forum/index.html', context)
 
@@ -58,6 +65,7 @@ def index(request):
                 'posts': posts,
                 'form' : form,
                 'form1':form1,
+                'count':count,
             }
             return render(request,'forum/index.html', context)
 
@@ -73,6 +81,7 @@ def index(request):
         'posts': posts,
         'form' : form,
         'form1':form1,
+        'count':count,
     }
     return render(request,'forum/index.html', context)
 
@@ -92,6 +101,9 @@ def post_detail(request, pk):
             content = request.POST.get('content')
             form = Comments.objects.create(comment_to=post, author=request.user, content=content)
             form.save()
+            con = "Someone Commented on your Post"
+            note = NotificationsPost.objects.create(postid = post,content = con,user = post.author,read = False)
+            note.save()
             messages.success(request, f'Comment Posted')
             return redirect('post-detail', pk=pk)
     else:
@@ -226,6 +238,9 @@ def like_post(request):
         is_liked = False
     else:
         post.likes.add(request.user)
+        con = "Someone Liked your Post"
+        note = NotificationsPost.objects.create(postid = post,content = con,user = post.author,read = False)
+        note.save()
         is_liked = True
     context = {
         'post': post,
@@ -249,6 +264,10 @@ def event_of_club(request, club_id):
             in_club = get_object_or_404(ExistingClub, pk=club_id)
             form3 = Events.objects.create(event_name =event_name, about_event =about_event, event_from=event_from, event_to=event_to, venue=venue, in_club=in_club)
             form3.save()
+            con = "An Event was announced in your club"
+            for i in in_club.club_members.all():
+                note = NotificationsEvents.objects.create(eventid = form3,content = con,user = i,read = False)
+                note.save()
             messages.success(request, f'Event added successfully')
             return redirect('club_forum',club_id=club_id)
     else:
@@ -257,3 +276,24 @@ def event_of_club(request, club_id):
         'form3':form3
     }
     return render(request,'events/post_event.html', context)
+
+
+def notifications(request):
+    cuser = request.user
+    PNoti = NotificationsPost.objects.filter(user = cuser)
+    ENoti = NotificationsEvents.objects.filter(user = cuser)
+    Noti = sorted(
+    chain(PNoti, ENoti),
+    key=attrgetter('date_posted'),reverse=True)
+    context = {
+        'Noti': Noti,
+    }
+    PPNoti = NotificationsPost.objects.filter(user = cuser)
+    EENoti = NotificationsEvents.objects.filter(user = cuser)
+    for note in PPNoti:
+        note.read = True
+        note.save()
+    for note in EENoti:
+        note.read = True
+        note.save()
+    return render(request, 'forum/notifications.html', context)

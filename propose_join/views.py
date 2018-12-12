@@ -46,15 +46,16 @@ def proposedClubList(request):
         #print(timeleft)
         i.pollend=timeleft
         i.save()
-        for i in clubs:
-            if i.pollend<0:
-                vote=i.num_vote_up
+        for a in clubs:
+            if a.pollend<0:
+                vote=a.num_vote_up
             #   print(vote)
                 threshhold=(vote/totalstudent)*100
                 if threshhold >10:
                     instance=ExistingClub.objects.create(club_name=a.club_name, club_info=a.club_info,club_logo=a.club_logo)
                     instance.admin.add(a.name)
-                i.delete()
+                    instance.club_members.add(a.name)
+                a.delete()
 
     clubs = Onpollclub.objects.all()
     paginator = Paginator(clubs,10)
@@ -211,12 +212,12 @@ class ProposedClubDetailView(DetailView):
         instance.pollend=timeleft
         end=instance.pollend
         if end < 0:
-            vote = instance.num_vote_up
-            totalstudent = Profile.objects.all().count()
-            threshhold = (vote / totalstudent) * 100
-            if threshhold > 10:
-                insta = ExistingClub.objects.create(club_name=instance.club_name, club_info=instance.club_info,club_logo=instance.club_logo)
-                insta.admin.add(instance.name)
+            #vote = instance.num_vote_up
+            #totalstudent = Profile.objects.all().count()
+            #threshhold = (vote / totalstudent) * 100
+            #if threshhold > 10:
+                #insta = ExistingClub.objects.create(club_name=instance.club_name, club_info=instance.club_info,club_logo=instance.club_logo)
+                #insta.admin.add(instance.name)
             instance.delete()
             return Onpollclub.DoesNotExist("object doesnt exist")
 

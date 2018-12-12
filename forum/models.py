@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from django.urls import reverse
 from propose_join.models import ExistingClub
+from events.models import Events
 #from registration.models import Profile
 #from propose_join.models import Clubs
 
@@ -40,3 +41,19 @@ class Replies(models.Model):
 
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk': self.pk})
+
+
+class NotificationsPost(models.Model):
+     postid = models.ForeignKey(Post, on_delete=models.CASCADE)
+     content = models.TextField()
+     user = models.ForeignKey(User, on_delete=models.CASCADE)
+     date_posted = models.DateTimeField(default=timezone.now)
+     read = models.BooleanField(default='False',blank='False')
+
+
+class NotificationsEvents(models.Model):
+     eventid = models.ForeignKey(Events, on_delete=models.CASCADE)
+     content = models.TextField()
+     user = models.ForeignKey(User, on_delete=models.CASCADE)
+     date_posted = models.DateTimeField(default=timezone.now)
+     read = models.BooleanField(default='False',blank='False')

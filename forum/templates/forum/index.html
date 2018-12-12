@@ -56,3 +56,12 @@
     <div style="text-align:center;">...</div>
 
 {% endblock %}
+{% block link %}
+  <p class='text-muted'>
+    <ul class="list-group">
+      <li class="list-group-item list-group-item-light"><a class=" btn btn-outline-info" style="width: 100%;"href="{% url 'notifications' %}">Notifications{%if count != 0%} <span class="badge badge-danger">{{count}}</span> {%endif%}</a></li>
+        <li class="list-group-item list-group-item-light"><a href="{% url 'list_user_event' %}">Show Events</a></li>
+    </ul>
+  </p>
+
+{% endblock %}

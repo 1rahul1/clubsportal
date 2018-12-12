@@ -8,7 +8,7 @@
       <img class="rounded-circle account-img" src="{{ object.club_logo.url }}">
       <div class="media-body">
         <h2 class="account-heading">{{ object.club_name }}</h2>
-        <p class="text-secondary">{{ object.club_info }}</p>
+        <p class="text-secondary">{{ object.club_info|truncatewords_html:50|urlize }}</p>
       </div>
     </div>
   </div>
@@ -68,7 +68,7 @@
       <li class="list-group-item list-group-item-light">Top Clubs</li>
       <li class="list-group-item list-group-item-light">Top Posts</li>
       {% for club in inclub %}
-      <li class="list-group-item list-group-item-light"><a href="{% url 'list_club_event' club.id %}">Show Event</a></li>
+      <li class="list-group-item list-group-item-light"><a href="{% url 'list_club_event' club.id %}">Show Events</a></li>
       <li class="list-group-item list-group-item-light"><a href="{% url 'propose_join:listmem' club.id %}">Club Members</a></li>
       {% if request.user in object.admin.all %}
 

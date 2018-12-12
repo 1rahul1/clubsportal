@@ -7,7 +7,7 @@
                 <div class="media-body">
                     <h2 class="account-heading" style="margin-left: 50px">{{ user.username }}</h2><br>
                     {% if request.user in club.admin.all %}
-                    {% if user not in club.admin.all %} 
+                    {% if user not in club.admin.all %}
                     <form class='myclub.url' method="POST" class="form">
                         {% csrf_token %}
                         <input type="hidden" name="club-id" value="{{club.id}}">

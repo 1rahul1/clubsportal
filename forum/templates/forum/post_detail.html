@@ -10,7 +10,7 @@
 
       </div>
       <h2 class="article-title">{{ post.title }}</h2>
-      <p class="article-content">{{ post.content|urlize }}</p>
+      <p class="article-content">{{ post.content|urlize|linebreaks }}</p>
       <div class="">
         <div style="float: right;" class="mr-2" id="like_section">
           {% if request.user.is_authenticated %}
